@@ -22,7 +22,7 @@
 #define GIC_TRIG_EDGE			1
 #define GIC_TRIG_LEVEL			0
 
-#define GIC_NUM_INTRS			(24 + NR_CPUS * 2)
+#define GIC_NUM_INTRS		64 //	(24 + NR_CPUS * 2)
 
 #define MSK(n) ((1 << (n)) - 1)
 #define REG32(addr)		(*(volatile unsigned int *) (addr))
@@ -318,6 +318,7 @@ struct gic_intrmask_regs {
 	DECLARE_BITMAP(intrmask, GIC_NUM_INTRS);
 };
 
+
 /*
  * Interrupt Meta-data specification. The ipiflag helps
  * in building ipi_map.
@@ -381,6 +382,7 @@ extern cycle_t gic_read_count(void);
 extern cycle_t gic_read_compare(void);
 extern void gic_write_compare(cycle_t cnt);
 extern void gic_write_cpu_compare(cycle_t cnt, int cpu);
+extern void gic_irq_dispatch(void);
 extern void gic_send_ipi(unsigned int intr);
 extern unsigned int plat_ipi_call_int_xlate(unsigned int);
 extern unsigned int plat_ipi_resched_int_xlate(unsigned int);

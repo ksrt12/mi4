@@ -83,6 +83,12 @@ enum loongson_machine_type {
 #define  MACH_INGENIC_JZ4730	0	/* JZ4730 SOC		*/
 #define  MACH_INGENIC_JZ4740	1	/* JZ4740 SOC		*/
 
+/*
+ * Valid machtype for group Ralink rt2880
+ */
+#define MACH_GROUP_RT2880	23	/* Ralink AP SoC */
+#define MACH_RALINK_ROUTER	0 	/* Ralink Wireless ROUTER*/
+
 extern char *system_type;
 const char *get_system_type(void);
 

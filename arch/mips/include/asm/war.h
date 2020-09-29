@@ -9,7 +9,8 @@
 #ifndef _ASM_WAR_H
 #define _ASM_WAR_H
 
-#include "rt2880/war.h"
+//#include "rt2880/war.h"
+#include <war.h>
 
 /*
  * Work around certain R4000 CPU errata (as implemented by GCC):

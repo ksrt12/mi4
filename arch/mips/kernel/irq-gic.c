@@ -206,6 +206,47 @@ unsigned int gic_get_int(void)
 	return find_first_bit(pending, GIC_NUM_INTRS);
 }
 
+void gic_irq_dispatch(void)
+{
+	unsigned int i, intr;
+	unsigned long *pcpu_mask;
+	unsigned long *pending_abs, *intrmask_abs;
+	DECLARE_BITMAP(pending, GIC_NUM_INTRS);
+	DECLARE_BITMAP(intrmask, GIC_NUM_INTRS);
+
+#if defined (CONFIG_CEVT_GIC)
+	if (gic_compare_int())
+		do_IRQ(gic_irq_base + MIPS_GIC_LOCAL_INT_COMPARE);
+#endif
+
+	/* Get per-cpu bitmaps */
+	pcpu_mask = pcpu_masks[smp_processor_id()].pcpu_mask;
+
+	pending_abs = (unsigned long *) GIC_REG_ABS_ADDR(SHARED,
+							 GIC_SH_PEND_31_0_OFS);
+	intrmask_abs = (unsigned long *) GIC_REG_ABS_ADDR(SHARED,
+							  GIC_SH_MASK_31_0_OFS);
+
+	for (i = 0; i < BITS_TO_LONGS(GIC_NUM_INTRS); i++) {
+		GICREAD(*pending_abs, pending[i]);
+		GICREAD(*intrmask_abs, intrmask[i]);
+		pending_abs++;
+		intrmask_abs++;
+	}
+
+	bitmap_and(pending, pending, intrmask, GIC_NUM_INTRS);
+	bitmap_and(pending, pending, pcpu_mask, GIC_NUM_INTRS);
+
+	intr = find_first_bit(pending, GIC_NUM_INTRS);
+	while (intr < GIC_NUM_INTRS) {
+		do_IRQ(gic_irq_base + intr);
+		
+		/* go to next pending bit */
+		bitmap_clear(pending, intr, 1);
+		intr = find_first_bit(pending, GIC_NUM_INTRS);
+	}
+}
+
 static void gic_mask_irq(struct irq_data *d)
 {
 	GIC_CLR_INTR_MASK(d->irq - gic_irq_base);
