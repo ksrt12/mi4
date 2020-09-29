@@ -600,4 +600,3 @@ config TILE_SROM
 	  how to partition a single ROM for multiple purposes.
 
 endmenu
-
