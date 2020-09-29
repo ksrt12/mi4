@@ -1592,7 +1592,7 @@ int mtk_nand_erase_hw(struct mtd_info *mtd, int page)
 {
 	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
 
-	chip->erase_cmd(mtd, page);
+	chip->erase(mtd, page);
 
 	return chip->waitfunc(mtd, chip);
 }

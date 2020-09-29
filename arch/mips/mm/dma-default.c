@@ -163,7 +163,7 @@ static void mips_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
 	dma_addr_t dma_handle, struct dma_attrs *attrs)
 {
 	unsigned long addr = (unsigned long) vaddr;
-	int order = get_order(size);
+	//int order = get_order(size);
 
 	if (dma_release_from_coherent(dev, order, vaddr))
 		return;

@@ -52,6 +52,14 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
 #define NAND_MAX_CHIPS		8
 
 /*
+ * This constant declares the max. oobsize / page, which
+ * is supported now. If you add a chip with bigger oobsize/page
+ * adjust this accordingly.
+ */
+#define NAND_MAX_OOBSIZE	576
+#define NAND_MAX_PAGESIZE	8192
+
+/*
  * Constants for hardware specific CLE/ALE/NCE function
  *
  * These are bits which can be or'ed to set/clear multiple
@@ -653,7 +661,9 @@ struct nand_chip {
 	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
 			int feature_addr, uint8_t *subfeature_para);
 	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
-
+#if defined (CONFIG_MTD_NAND_MTK)
+	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip, u8 *buf, int page);
+#endif
 	int chip_delay;
 	unsigned int options;
 	unsigned int bbt_options;
